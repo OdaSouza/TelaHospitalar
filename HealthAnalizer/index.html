@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento Sensorial - Kafka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        .row-new { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; background-color: #374151; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white">Telemetria em Tempo Real</h1>
+                <p class="text-slate-400">Fluxo direto do tópico Kafka: <span class="font-mono text-blue-400">sensor-data</span></p>
+            </div>
+            <div id="connection-status" class="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
+                <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse" id="status-dot"></div>
+                <span class="text-sm font-medium" id="status-text">Desconectado</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700">
+                <span class="text-xs font-bold uppercase tracking-wider text-orange-500">Temperatura</span>
+                <div class="flex items-baseline mt-2">
+                    <span id="display-temp" class="text-5xl font-mono font-bold">--</span>
+                    <span class="ml-2 text-xl text-slate-500">°C</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700">
+                <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Pressão</span>
+                <div class="flex items-baseline mt-2">
+                    <span id="display-pres" class="text-5xl font-mono font-bold">--</span>
+                    <span class="ml-2 text-xl text-slate-500">atm</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Oxigenação</span>
+                <div class="flex items-baseline mt-2">
+                    <span id="display-oxig" class="text-5xl font-mono font-bold">--</span>
+                    <span class="ml-2 text-xl text-slate-500">%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                <h3 class="font-bold text-slate-300">Últimas Leituras</h3>
+                <span class="text-[10px] bg-slate-700 px-2 py-1 rounded text-slate-400 uppercase">Auto-update</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-slate-500 text-xs uppercase tracking-widest bg-slate-900/30">
+                            <th class="px-6 py-4">Horário</th>
+                            <th class="px-6 py-4">Temp.</th>
+                            <th class="px-6 py-4">Pressão</th>
+                            <th class="px-6 py-4">O2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body" class="text-sm font-mono">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
